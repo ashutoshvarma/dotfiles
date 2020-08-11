@@ -1,0 +1,7 @@
+[user]
+	email = ashutoshvarma11@live.com
+	name = Ashutosh Varma
+[core]
+	excludesFile = ~/.gitignore
+[pull]
+	ff = only

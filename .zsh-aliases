@@ -1,0 +1,198 @@
+#!/usr/bin/env zsh
+
+## generic
+
+command -v bat       &> /dev/null    && alias c='bat -p'                                           || alias c='cat'
+command -v fd        &> /dev/null    && alias fd='fd --hidden --follow'                            || alias fd='find . -name'
+command -v rg        &> /dev/null    && alias rg='rg --hidden --follow --smart-case 2>/dev/null'   || alias rg='grep --color=auto --exclude-dir=.git -R'
+command -v exa       &> /dev/null    && alias ls='exa --group --git --group-directories-first'     || alias ls='ls --color=auto --group-directories-first -h'
+command -v exa       &> /dev/null    && alias la='ll -a'                                           || alias la='ll -A'
+command -v exa       &> /dev/null    && alias lk='ll -s=size'                                      || alias lk='ll -r --sort=size'
+command -v exa       &> /dev/null    && alias lm='ll -s=modified'                                  || alias lm='ll -r --sort=time'
+command -v kitty     &> /dev/null    && alias icat="kitty +kitten icat"
+
+alias e="$EDITOR"
+alias d='dig +nocmd +multiline +noall +answer'
+alias cp='cp -r --reflink=auto'
+alias mkdir='mkdir -p'
+alias hexdump='od -A x -t x1z -v'
+alias http-serve='python -m http.server'
+alias htpasswd='openssl passwd -apr1'
+alias ip='ip -color -brief'
+alias locate='locate -i'
+alias o='xdg-open'
+alias rm!='\rm -rf'
+alias rsync='rsync --verbose --archive --info=progress2 --human-readable --partial'
+alias sudo='sudo -E '
+alias tree='tree -a -I .git --dirsfirst'
+alias ll='ls -l'
+alias utc='env TZ=UTC date'
+alias battery-normal='sudo cctk --PrimaryBattChargeCfg=custom:50-86 --ValSetupPwd="$(pass personal/bios)"'
+alias battery-full='sudo cctk --PrimaryBattChargeCfg=standard --ValSetupPwd="$(pass personal/bios)"'
+
+ssh() { z4h ssh "$@" }
+
+function md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" }
+compdef _directories md
+
+e64() { [[ $# == 1 ]] && base64 -w0 <<<"$1" || base64 -w0 }
+d64() { [[ $# == 1 ]] && base64 --decode <<<"$1" || base64 --decode }
+
+p() { ping "${1:-1.1.1.1}" }
+
+tmpd() { cd "$(mktemp -d -t "${1:-tmp}.XXXXXXXXXX")" }
+
+## kubectl
+
+alias k='kubectl'
+alias kc='kubectx "$(kubectx | fzf --height=10%)"'
+alias kn='kubens "$(kubens | fzf --height=10%)"'
+alias kd='k describe'
+alias kd!='kd --all-namespaces'
+alias kdp='kd pod'
+alias kdel='k delete'
+alias ke='k exec -ti'
+alias kg='k get'
+alias kg!='kg --all-namespaces'
+alias kgd='kg deployment'
+alias kgd!='kgd --all-namespaces'
+alias kgp='kg pod'
+alias kgp!='kgp --all-namespaces'
+alias kgs='kg service'
+alias kgs!='kgs --all-namespaces'
+alias kl='kubectl logs -f'
+
+## docker-compose
+
+alias dc='docker-compose'
+alias dcu='dc up -d'
+alias dcd='dc down'
+alias dcr='dcd; dcu'
+alias dcp='dc pull'
+alias dcl='dc logs -f --tail=1000'
+alias dce='dc exec'
+alias dcs='dc ps'
+
+## systemctl
+
+alias sys='systemctl'
+alias sysu='systemctl --user'
+alias status='sys status'
+alias statusu='sysu status'
+alias start='sys start'
+alias startu='sysu start'
+alias stop='sys stop'
+alias stopu='sysu stop'
+alias restart='sys restart'
+alias restartu='sysu restart'
+alias enable='sys enable'
+alias enableu='sysu enable'
+alias disable='sys disable'
+alias disableu='sysu disable'
+alias reload='sys daemon-reload'
+alias reloadu='sysu daemon-reload'
+alias timers='sys list-timers'
+alias timersu='sysu list-timers'
+
+## git
+
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'
+alias gap='git add -p'
+alias gb='git branch'
+alias gba='git branch --all'
+alias gbd='git branch -D'
+alias gbda='git branch --no-color --merged | command grep -vE "^(\*|\s*(master|develop|dev)\s*$)" | command xargs -n 1 git branch -d'
+alias gbo='git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD) $(git symbolic-ref --short HEAD)'
+alias gbu='git branch --set-upstream-to=upstream/$(git symbolic-ref --short HEAD) $(git symbolic-ref --short HEAD)'
+alias gbsb='git bisect bad'
+alias gbsg='git bisect good'
+alias gbsr='git bisect reset'
+alias gbss='git bisect start'
+alias gc='git commit -v'
+alias gc!='git commit -v --amend'
+alias gcn!='git commit --no-edit --amend'
+alias gac='git add --all && git commit -v'
+alias gac!='git add --all && git commit -v --amend'
+alias gacn!='git add --all && git commit --amend --no-edit'
+alias gacm='git add --all && git commit -m'
+alias gcm='git commit -m'
+alias gcf='git commit --fixup'
+alias gcfh='git commit --fixup HEAD'
+alias gacf='git add --all && git commit --fixup'
+alias gacfh='git add --all && git commit --fixup HEAD'
+alias gco='git checkout'
+alias gcom='git checkout master'
+alias gcob='git checkout -b'
+alias gcop='git checkout -p'
+alias gcp='git cherry-pick'
+alias gcpa='git cherry-pick --abort'
+alias gcpc='git cherry-pick --continue'
+alias gd='git diff'
+alias gds='git diff --cached'
+alias gd!='git difftool -d'
+alias gds!='git difftool -d --cached'
+alias gf='git fetch --tags'
+alias gl='git pull --tags -f'
+alias glog="git log --graph --pretty='%Cred%h%Creset%C(yellow)%d%Creset %s %Cgreen(%cr) %C(blue)<%an>%Creset' --abbrev-commit"
+alias gloga="git log --graph --pretty='%Cred%h%Creset%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --all"
+alias glogp='git log -p'
+alias gm='git merge'
+alias gma='git merge --abort'
+alias gp='git push -u'
+alias gpf='git push --force-with-lease'
+alias gpf!='git push --force'
+alias gra='git remote add'
+alias grr='git remote remove'
+alias grv='git remote -v'
+alias grba='git rebase --abort'
+alias grbc='git rebase --continue'
+alias grbi='git rebase -i'
+alias grbm='git rebase -i master'
+alias grbom='git rebase -i origin/master'
+alias gr='git reset'
+alias gr!='git reset --hard'
+alias grh='git reset HEAD'
+alias grh!='git reset --hard HEAD'
+alias garh!='git add --all && git reset --hard HEAD'
+alias gs='git show --show-signature'
+alias gss='git status -sb'
+alias gst='git status'
+alias gsa='git submodule add'
+alias gsu='git submodule update --remote'
+alias gsr='git submodule-remove'
+
+gcl() {
+    git clone --recursive "$@"
+    cd -- "${${${@: -1}##*/}%.*}"
+}
+
+grf() {
+    upstream="$(git remote get-url upstream 2>/dev/null || git remote get-url origin)"
+    if [[ $# == 1 ]]; then
+        if [[ "$upstream" == https* ]]; then
+            fork=$(echo "$upstream" | awk -v name="$1" -F/ '{ print $1 "/" $2 "/" $3 "/" name "/" $5 }')
+        else
+            fork=$(echo "$upstream" | awk -v name="$1" -F/ '{ print "https://github.com/" name "/" $2 }')
+        fi
+
+        git remote remove "$1" 2>/dev/null
+        git remote add "$1" "$fork"
+        git fetch "$1"
+    else
+        myfork=$(echo "$upstream" | awk -v name="$USER" -F/ '{ print "git@github.com:" name "/" $5 }')
+
+        git remote remove upstream 2>/dev/null
+        git remote remove origin 2>/dev/null
+
+        git remote add upstream "$upstream"
+        git remote add origin "$myfork"
+
+        git fetch upstream
+        git fetch origin
+
+        git branch --set-upstream-to=upstream/master master
+    fi
+}
+

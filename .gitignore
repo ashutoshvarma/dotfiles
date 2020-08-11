@@ -1,0 +1,28 @@
+### Vim ###
+# Swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Session
+Session.vim
+
+# Temporary
+.netrwhist
+*~
+# Auto-generated tag files
+tags
+# Persistent undo
+[._]*.un~
+
+autoload/
+plugged/
+plug_plugins/custom/
+.backup/
+.tmp/
+.undo/
+
+config/_local.vim
+clang_complete.vmb
