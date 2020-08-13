@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Prime OFFLOAD
+Exec=sh -c "\$HOME/.local/bin/prime-offload.sh"
+NoDisplay=true
+X-GNOME-Autostart-Phase=DisplayServer
