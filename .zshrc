@@ -37,6 +37,7 @@ if (( UID && UID == EUID && ! Z4H_SSH )); then
 fi
 
 z4h install romkatv/archive || return
+z4h install agkozak/zsh-z || return
 
 
 # Install or update core components (fzf, zsh-autosuggestions, etc.) and
@@ -45,6 +46,7 @@ z4h install romkatv/archive || return
 # above. Everything else is best done below.
 z4h init || return
 
+z4h source -c $Z4H/agkozak/zsh-z/zsh-z.plugin.zsh
 fpath+=($Z4H/romkatv/archive)
 
 # Autoload functions.
