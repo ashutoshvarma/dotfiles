@@ -3,6 +3,9 @@
 command -v nvim &> /dev/null && export EDITOR='nvim'     || export EDITOR='vim'
 command -v kak  &> /dev/null && export VISUAL='nvim'     || export VISUAL='vim'
 
+# extend PATH
+export PATH="$HOME/.local/bin:$PATH"
+
 export GPG_TTY=$TTY
 
 if [ -n "${ZSH_VERSION-}" ]; then

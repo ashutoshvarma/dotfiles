@@ -5,6 +5,4 @@ export LANGUAGE=en_US
 export LC_ALL=en_US.UTF-8
 
 
-# extend PATH
-export PATH="$HOME/.local/bin:$PATH"
 
