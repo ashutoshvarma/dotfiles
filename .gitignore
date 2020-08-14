@@ -26,3 +26,7 @@ plug_plugins/custom/
 
 config/_local.vim
 clang_complete.vmb
+
+
+### python ###
+.python-version
