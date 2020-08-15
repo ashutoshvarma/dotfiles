@@ -46,6 +46,10 @@ let g:ycm_filetype_blacklist = {
   \ }
 
 
-noremap <leader>gd :YcmCompleter GetDoc<cr>
+noremap <leader>jd :YcmCompleter GetDoc<cr>
+noremap <leader>jt :YcmCompleter GoTo<cr>
+noremap <leader>jtf :YcmCompleter GoToDefinition<cr>
+noremap <leader>jtd :YcmCompleter GoToDeclaration<cr>
+noremap <leader>jr :YcmCompleter GoToReferences<cr>
 
 " vim: set sw=2 ts=2 et tw=78 :
