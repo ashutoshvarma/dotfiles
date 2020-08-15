@@ -14,18 +14,18 @@ endif
 
 if has('autocmd')
   augroup auto_fzf_settings
-    autocmd!
-
-    autocmd! FileType fzf
-    autocmd FileType fzf set laststatus=0 noshowmode noruler
-      \| autocmd BufLeave <buffer> set laststatus=1 showmode ruler
+    if has('nvim') && !exists('g:fzf_layout')
+      autocmd! FileType fzf
+      autocmd  FileType fzf set laststatus=0 noshowmode noruler
+      \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+    endif
   augroup END
 endif
 
 let $FZF_DEFAULT_COMMAND =
   \ get(g:, 'fzf_default_cmd',
   \   !empty($FZF_DEFAULT_COMMAND) ? $FZF_DEFAULT_COMMAND :
-  \   executable('rg') ? 'rg --files --hidden --follow --glob "\!.git/*"' :
+  "\   executable('rg') ? 'rg --files --hidden --follow --glob "\!.git/*"' :
   \   executable('ag') ? 'ag --hidden --ignore .git -g ""' :
   \   executable('fd') ? 'fd --type f' :
   \   'find * -path "*/\.*" -prune -o -path "node_modules/**" -prune -o -path "target/**" -prune -o -path "dist/**" -prune -o -type f -print -o -type l -print 2> /dev/null'
@@ -59,8 +59,8 @@ let g:fzf_colors = {
   \ 'header': ['fg', 'Comment']
   \ }
 
-"nnoremap <silent> <leader>ff :FzfFilesWithDevIcon<cr>
-nnoremap <silent> <leader>ff :Files<cr>
+nnoremap <silent> <leader>ff :FzfFilesWithDevIcon<cr>
+"nnoremap <silent> <leader>ff :Files<cr>
 nnoremap <silent> <leader>bb :Buffers<cr>
 
 " advanced customization using autoload functions
