@@ -1,7 +1,12 @@
 [user]
 	email = ashutoshvarma11@live.com
 	name = Ashutosh Varma
+	signingkey = 41650358D9338845
 [core]
 	excludesFile = ~/.gitignore
 [pull]
 	ff = only
+[commit]
+	gpgSign = true
+[tag]
+	gpgSign = true

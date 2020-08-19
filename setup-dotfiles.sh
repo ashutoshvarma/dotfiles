@@ -3,6 +3,8 @@
 set -e
 exec 2> >(while read line; do echo -e "\e[01;31m$line\e[0m"; done)
 
+MY_GPG_KEY_FP="ECE48C71E23CDFDC517165E841650358D9338845"
+
 dotfiles_dir="$(
     cd "$(dirname "$0")"
     pwd
@@ -32,9 +34,11 @@ echo -e "\e[01;32m-------------------\e[0m"
 
 link ".local/bin/prime-offload.sh"
 link ".local/share/applications/prime-offload.desktop"
+link ".local/share/gpg/gpg.conf"
 
 link ".config/nvim"
 link ".config/kitty"
+link ".config/dconf/user"
 
 link ".gitconfig"
 link ".gitignore"
@@ -48,3 +52,9 @@ link ".zshrc"
 
 echo -e "\e[01;32mDone\e[0m"
 
+
+if ! gpg -k | grep "$MY_GPG_KEY_FP" > /dev/null; then
+    echo "Importing my public PGP key"
+    curl -s https://ashutoshvarma.github.io/pgp_keys.asc | gpg --import
+    gpg --trusted-key "$MY_GPG_KEY_FP" > /dev/null
+fi
