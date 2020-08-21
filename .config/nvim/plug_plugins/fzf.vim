@@ -22,10 +22,11 @@ if has('autocmd')
   augroup END
 endif
 
+let $FZF_DEFAULT_OPTS = '--bind ctrl-d:preview-page-down,ctrl-u:preview-page-up'
 let $FZF_DEFAULT_COMMAND =
   \ get(g:, 'fzf_default_cmd',
   \   !empty($FZF_DEFAULT_COMMAND) ? $FZF_DEFAULT_COMMAND :
-  "\   executable('rg') ? 'rg --files --hidden --follow --glob "\!.git/*"' :
+  \   executable('rg') ? 'rg --files --hidden --follow --glob "!.git" ' :
   \   executable('ag') ? 'ag --hidden --ignore .git -g ""' :
   \   executable('fd') ? 'fd --type f' :
   \   'find * -path "*/\.*" -prune -o -path "node_modules/**" -prune -o -path "target/**" -prune -o -path "dist/**" -prune -o -type f -print -o -type l -print 2> /dev/null'
@@ -43,6 +44,8 @@ endif
 let s:ctags_bin = get(g:, 'ctags_bin', 'ctags')
 let g:fzf_tags_command = s:ctags_bin . ' -R'
 let g:fzf_layout = { 'down': '~40%' }
+let g:fzf_preview_window = 'right:50%'
+let g:fzf_commits_log_options = '--graph --color=always --pretty="%Cred%h%Creset%C(yellow)%d%Creset %s %Cgreen(%cr) %C(blue)<%an>%Creset" --abbrev-commit'
 let g:fzf_colors = {
   \ 'fg': ['fg', 'Normal'],
   \ 'bg': ['bg', 'Normal'],
@@ -58,13 +61,34 @@ let g:fzf_colors = {
   \ 'spinner': ['fg', 'Label'],
   \ 'header': ['fg', 'Comment']
   \ }
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit'}
 
-nnoremap <silent> <leader>ff :FzfFilesWithDevIcon<cr>
-"nnoremap <silent> <leader>ff :Files<cr>
+nnoremap <silent> <leader>fi :FzfFilesWithDevIcon<cr>
+nnoremap <silent> <leader>ff :Files<cr>
+nnoremap <silent> <leader>fp :ProjectFiles<cr>
 nnoremap <silent> <leader>bb :Buffers<cr>
+nnoremap <silent> <leader>gf :GFiles?<cr>
+nnoremap <silent> <leader>glo :Commits<cr>
+nnoremap <silent> <leader>glb :BCommits<cr>
+nnoremap <silent> <leader>gr :GGrep<cr>
+nnoremap <silent> <leader>fh :History<cr>
 
 " advanced customization using autoload functions
 inoremap <expr> <C-x><C-k> fzf#vim#complete#word({'left': '15%'})
+
+""
+" @private
+" Get the git repo root
+" From: https://github.com/junegunn/fzf.vim/issues/47#issuecomment-160237795
+""
+function! s:find_git_root()
+  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
+endfunction
+
+command! ProjectFiles execute 'Files' s:find_git_root()
 
 ""
 " @private
@@ -72,7 +96,7 @@ inoremap <expr> <C-x><C-k> fzf#vim#complete#word({'left': '15%'})
 " From: https://github.com/ryanoasis/vim-devicons/issues/106
 function! s:FzfFilesWithDevIcons() abort
   if executable('bat')
-    let l:fzf_files_options = printf('--preview "bat %s %s | head -%s"',
+    let l:fzf_files_options = printf(' -m --bind ctrl-d:preview-page-down,ctrl-u:preview-page-up --preview "bat --color always --style numbers %s %s | head -%s"',
       \ '--style=numbers,changes --color always',
       \ exists('*WebDevIconsGetFileTypeSymbol') ? '{2..-1}' : '{}',
       \ &lines)
@@ -125,8 +149,8 @@ command! -bang -nargs=* Rg
 " - fzf#vim#grep(command, with_column, [options], [fullscreen])
 command! -bang -nargs=* GGrep
   \ call fzf#vim#grep(
-  \   'git grep --line-number '.shellescape(<q-args>), 0,
-  \   { 'dir': systemlist('git rev-parse --show-toplevel')[0] }, <bang>0)
+  \   'git grep --line-number -- '.shellescape(<q-args>), 0,
+  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
 
 " augmenting Ag command using fzf#vim#with_preview function
 "   * fzf#vim#with_preview([[options], [preview window], [toggle keys...]])
