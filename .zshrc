@@ -30,11 +30,11 @@ zstyle    ':z4h:ssh:router'                              passthrough            
 zstyle    ':z4h:term-title:ssh'                          preexec                '%* | %n@%m: ${1//\%/%%}'
 zstyle    ':z4h:term-title:local'                        preexec                '%* | ${1//\%/%%}'
 
-if (( UID && UID == EUID && ! Z4H_SSH )); then
+#if (( UID && UID == EUID && ! Z4H_SSH )); then
   # When logged in as a regular user and not via `z4h ssh`, check that
   # login shell is zsh and offer to change it if it isn't.
-  z4h chsh
-fi
+#  z4h chsh
+#fi
 
 z4h install romkatv/archive || return
 z4h install agkozak/zsh-z || return
@@ -80,5 +80,14 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 command -v pyenv &> /dev/null && eval "$(pyenv init -)"
 command -v pyenv &> /dev/null && eval "$(pyenv virtualenv-init -)"
 command -v pyenv &> /dev/null && z4h source -c "$(pyenv root)/completions/pyenv.zsh"
+
+
+# azure-cli completions
+if [ ! -f ~/.local/share/bash_completion.d/az.completion ]
+then
+    wget https://raw.githubusercontent.com/Azure/azure-cli/dev/az.completion -q -P ~/.local/share/bash_completion.d/
+fi
+z4h source -c ~/.local/share/bash_completion.d/az.completion
+
 
 return 0
