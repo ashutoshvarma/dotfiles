@@ -21,9 +21,13 @@ let g:ale_sign_error = '❌'
 "let g:ale_sign_error = ''
 let g:ale_sign_warning = ''
 
+let g:ale_linter_aliases = {'typescriptreact': 'typescript'}
+
 nmap <silent> <A-k> <Plug>(ale_previous_wrap)
 nmap <silent> <A-j> <Plug>(ale_next_wrap)
 
 nmap <F8> <Plug>(ale_fix)
 nmap <leader>ta :ALEToggleBuffer<cr>
+
+
 
