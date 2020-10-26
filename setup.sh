@@ -50,8 +50,11 @@ link ".zsh-aliases"
 link ".zshenv"
 link ".zshrc"
 
-echo -e "\e[01;32mDone\e[0m"
+echo "Cloning pyenv and pyenv-virtualenv"
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+git clone https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
 
+echo -e "\e[01;32mDone\e[0m"
 
 if ! gpg -k | grep "$MY_GPG_KEY_FP" > /dev/null; then
     echo "Importing my public PGP key"
