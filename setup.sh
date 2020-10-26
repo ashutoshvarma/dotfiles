@@ -51,8 +51,17 @@ link ".zshenv"
 link ".zshrc"
 
 echo "Cloning pyenv and pyenv-virtualenv"
-git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-git clone https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv 1>/dev/null
+git clone https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv 1>/dev/null
+
+if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null ; then
+    echo "WSL Detected."
+    echo "Downloading win32yank.exe for neovim clipboard support"
+    curl -sLo/tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip
+    unzip -p /tmp/win32yank.zip win32yank.exe > /tmp/win32yank.exe
+    chmod +x /tmp/win32yank.exe
+    mv /tmp/win32yank.exe ~/.local/bin
+fi
 
 echo -e "\e[01;32mDone\e[0m"
 
